@@ -1,5 +1,5 @@
 {
-  description = "ctl-scafoold";
+  description = "ctl-scaffold";
 
   inputs = {
     flake-compat = {
