@@ -1,7 +1,7 @@
 "use strict";
 
 // This needs to be asynchronous to load the WASM from CSL
-import("./Main.purs").then((m) => m.main());
+import("./exe/Main.purs").then((m) => m.main());
 
 if (module.hot) {
   module.hot.accept();
