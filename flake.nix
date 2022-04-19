@@ -13,11 +13,7 @@
     };
   };
 
-  outputs =
-    { self
-    , nixpkgs
-    , ...
-    }@inputs:
+  outputs = { self, nixpkgs, ... }@inputs:
     let
       defaultSystems = [ "x86_64-linux" "x86_64-darwin" ];
       perSystem = nixpkgs.lib.genAttrs defaultSystems;
@@ -55,22 +51,7 @@
             in
             (modules { }).shell.nodeDependencies;
 
-          buildPursProject =
-            { name
-            , src
-            , filter ? name: type:
-                builtins.any (ext: pkgs.lib.hasSuffix ext name) [
-                  ".purs"
-                  ".dhall"
-                ]
-            }:
-            let
-              cleanedSrc = builtins.path {
-                inherit filter;
-                name = "src";
-                path = src;
-              };
-            in
+          buildPursProject = { name, src, ... }:
             pkgs.stdenv.mkDerivation {
               inherit name src;
               buildInputs = [
