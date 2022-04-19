@@ -9,5 +9,7 @@ import Effect.Aff (launchAff_)
 main :: Effect Unit
 main = launchAff_ $ do
   cfg <- defaultContractConfig
-  runContract_ cfg $
-    log <<< show =<< ownPaymentPubKeyHash
+  runContract_ cfg
+    $ log
+    <<< show
+    =<< ownPaymentPubKeyHash
