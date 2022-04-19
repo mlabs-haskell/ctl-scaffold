@@ -42,11 +42,12 @@
             {
               nativeBuildInputs = [
                 easy-ps.purs-tidy
+                pkgs.fd
               ];
             }
             ''
               cd ${self}
-              purs-tidy check $(find ./* -iregex '.*.purs')
+              purs-tidy check $(fd -epurs)
               touch $out
             '';
         in
