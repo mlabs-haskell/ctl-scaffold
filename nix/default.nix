@@ -6,13 +6,11 @@
 }:
 
 let
-  ps-lib = import ./lib.nix {
-    inherit pkgs easy-ps spagoPkgs nodejs nodeModules;
-  };
   # We should try to use a consistent version of node across all
   # project components
   nodejs = pkgs.nodejs-12_x;
   easy-ps = import inputs.easy-purescript-nix { inherit pkgs; };
+  compiler = easy-ps.purs-0_14_5;
   spagoPkgs = import ../spago-packages.nix { inherit pkgs; };
   nodeEnv = import
     (pkgs.runCommand "nodePackages"
@@ -38,22 +36,80 @@ let
           });
     in
     (modules { }).shell.nodeDependencies;
+
+  buildPursProject =
+    { name
+    , src
+    , filter ? name: type:
+        builtins.any (ext: pkgs.lib.hasSuffix ext name) [
+          ".purs"
+          ".dhall"
+        ]
+    }:
+    let
+      cleanedSrc = builtins.path {
+        inherit filter;
+        name = "src";
+        path = src;
+      };
+    in
+    pkgs.stdenv.mkDerivation {
+      inherit name src;
+      buildInputs = [
+        spagoPkgs.installSpagoStyle
+        spagoPkgs.buildSpagoStyle
+      ];
+      nativeBuildInputs = [
+        compiler
+        easy-ps.spago
+      ];
+      unpackPhase = ''
+        export HOME="$TMP"
+
+        cp -r ${nodeModules}/lib/node_modules .
+        chmod -R u+rw node_modules
+        cp -r $src .
+
+        install-spago-style
+      '';
+      buildPhase = ''
+        build-spago-style "./**/*.purs"
+      '';
+      installPhase = ''
+        mkdir $out
+        mv output $out/
+      '';
+    };
+
+  runPursTest = { name, testMain ? "Test.Main", ... }@args:
+    (buildPursProject args).overrideAttrs
+      (oldAttrs: {
+        name = "${name}-check";
+        doCheck = true;
+        buildInputs = oldAttrs.buildInputs ++ [ nodejs ];
+        # spago will attempt to download things, which will fail in the
+        # sandbox (idea taken from `plutus-playground-client`)
+        checkPhase = ''
+          node -e 'require("./output/Test.Main").main()'
+        '';
+        installPhase = ''
+          touch $out
+        '';
+      });
 in
 {
   defaultPackage = self.packages.${system}.ctl-scaffold;
 
   packages = {
-    ctl-scaffold = ps-lib.buildPursProject {
+    ctl-scaffold = buildPursProject {
       name = "ctl-scaffold";
-      subdir = "exe";
       inherit src;
     };
   };
 
   checks = {
-    ctl-scaffold = ps-lib.runPursTest {
+    ctl-scaffold = runPursTest {
       name = "ctl-scaffold";
-      subdir = "test";
       inherit src;
     };
   };
@@ -62,8 +118,8 @@ in
     pkgs.mkShell
       {
         buildInputs = with easy-ps; [
-          easy-ps.purs-0_14_5
           spago
+          compiler
           purs-tidy
           purescript-language-server
           pscid
