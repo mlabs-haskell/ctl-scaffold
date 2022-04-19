@@ -108,7 +108,7 @@
                 # spago will attempt to download things, which will fail in the
                 # sandbox (idea taken from `plutus-playground-client`)
                 checkPhase = ''
-                  node -e 'require("./output/Test.Main").main()'
+                  node -e 'require("./output/${testMain}").main()'
                 '';
                 installPhase = ''
                   touch $out
