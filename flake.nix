@@ -26,7 +26,7 @@
           easy-ps = import inputs.easy-purescript-nix { inherit pkgs; };
           compiler = easy-ps.purs-0_14_5;
           spagoPkgs = import ./spago-packages.nix { inherit pkgs; };
-          nodeEnv = import
+          mkNodeEnv = { withDevDeps ? true }: import
             (pkgs.runCommand "nodePackages"
               {
                 buildInputs = [ pkgs.nodePackages.node2nix ];
@@ -35,11 +35,13 @@
               cp ${src}/package.json $out/package.json
               cp ${src}/package-lock.json $out/package-lock.json
               cd $out
-              node2nix --lock package-lock.json
+              node2nix ${pkgs.lib.optionalString withDevDeps "--development" } \
+                --lock package-lock.json
             '')
             { inherit pkgs nodejs system; };
-          nodeModules =
+          mkNodeModules = { withDevDeps ? true }:
             let
+              nodeEnv = mkNodeEnv { inherit withDevDeps; };
               modules = pkgs.callPackage
                 (_:
                   nodeEnv // {
@@ -51,7 +53,7 @@
             in
             (modules { }).shell.nodeDependencies;
 
-          buildPursProject = { name, src, ... }:
+          buildPursProject = { name, src, withDevDeps ? false, ... }:
             pkgs.stdenv.mkDerivation {
               inherit name src;
               buildInputs = [
@@ -62,15 +64,19 @@
                 compiler
                 easy-ps.spago
               ];
-              unpackPhase = ''
-                export HOME="$TMP"
+              unpackPhase =
+                let
+                  nodeModules = mkNodeModules { inherit withDevDeps; };
+                in
+                ''
+                  export HOME="$TMP"
 
-                cp -r ${nodeModules}/lib/node_modules .
-                chmod -R u+rw node_modules
-                cp -r $src .
+                  cp -r ${nodeModules}/lib/node_modules .
+                  chmod -R u+rw node_modules
+                  cp -r $src .
 
-                install-spago-style
-              '';
+                  install-spago-style
+                '';
               buildPhase = ''
                 build-spago-style "./**/*.purs"
               '';
@@ -141,23 +147,27 @@
                   pkgs.fd
                 ];
 
-                shellHook = ''
-                  __ln-node-modules () {
-                    local modules=./node_modules
-                    if test -L "$modules"; then
-                      rm "$modules";
-                    elif test -e "$modules"; then
-                      echo 'refusing to overwrite existing (non-symlinked) `node_modules`'
-                      exit 1
-                    fi
+                shellHook =
+                  let
+                    nodeModules = mkNodeModules { };
+                  in
+                  ''
+                    __ln-node-modules () {
+                      local modules=./node_modules
+                      if test -L "$modules"; then
+                        rm "$modules";
+                      elif test -e "$modules"; then
+                        echo 'refusing to overwrite existing (non-symlinked) `node_modules`'
+                        exit 1
+                      fi
 
-                    ln -s ${nodeModules}/lib/node_modules "$modules"
-                  }
+                      ln -s ${nodeModules}/lib/node_modules "$modules"
+                    }
 
-                  __ln-node-modules
+                    __ln-node-modules
 
-                  export PATH="${nodeModules}/bin:$PATH"
-                '';
+                    export PATH="${nodeModules}/bin:$PATH"
+                  '';
               };
         };
     in
