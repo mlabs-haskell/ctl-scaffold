@@ -73,7 +73,7 @@
 
                   cp -r ${nodeModules}/lib/node_modules .
                   chmod -R u+rw node_modules
-                  cp -r $src .
+                  cp -r $src/* .
 
                   install-spago-style
                 '';
