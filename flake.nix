@@ -6,13 +6,13 @@
       url = "github:edolstra/flake-compat";
       flake = false;
     };
-    nixpkgs.url = "github:NixOS/nixpkgs?ref=nixpkgs-unstable";
     cardano-transaction-lib = {
       type = "github";
       owner = "Plutonomicon";
       repo = "cardano-transaction-lib";
-      rev = "f65eb08656f9da4ad1b83b09d25422bcf4835e9c";
+      rev = "be7b7e2e23080fc54de73d6f69f4af6ff4d9ad50";
     };
+    nixpkgs.follows = "cardano-transaction-lib/nixpkgs";
   };
 
   outputs = { self, nixpkgs, cardano-transaction-lib, ... }@inputs:
@@ -30,84 +30,41 @@
         in
         pkgs.purescriptProject {
           inherit pkgs src;
-          spagoPkgsSrc = ./spago-packages.nix;
+          projectName = "ctl-scaffold";
         };
     in
     {
       defaultPackage = perSystem (system: self.packages.${system}.ctl-scaffold);
 
-      packages = perSystem (system:
-        {
-          ctl-scaffold = (psProjectFor system).buildPursProject {
-            name = "ctl-scaffold";
-          };
-        });
+      packages = perSystem (system: {
+        ctl-scaffold = (psProjectFor system).buildPursProject {
+          sources = [ "exe" ];
+        };
+      });
 
-      checks = perSystem
-        (system:
-          let
-            pkgs = nixpkgsFor system;
-            project = psProjectFor system;
-          in
-          {
-            ctl-scaffold = project.runPursTest {
-              name = "ctl-scaffold";
-            };
-            formatting-check = pkgs.runCommand "formatting-check"
-              {
-                nativeBuildInputs = [
-                  pkgs.easy-ps.purs-tidy
-                  pkgs.fd
-                ];
-              }
-              ''
-                cd ${self}
-                purs-tidy check $(fd -epurs)
-                touch $out
-              '';
-          });
-
-      devShell = perSystem (system:
+      checks = perSystem (system:
         let
           pkgs = nixpkgsFor system;
           project = psProjectFor system;
         in
-        pkgs.mkShell
-          {
-            buildInputs = with pkgs.easy-ps; [
-              project.pursCompiler
-              project.nodejs
-              spago
-              purs-tidy
-              purescript-language-server
-              pscid
-              spago2nix
-              pkgs.nodePackages.node2nix
-              pkgs.nixpkgs-fmt
-              pkgs.fd
-            ];
+        {
+          ctl-scaffold = project.runPursTest {
+            sources = [ "exe" "test" ];
+          };
+          formatting-check = pkgs.runCommand "formatting-check"
+            {
+              nativeBuildInputs = [
+                pkgs.easy-ps.purs-tidy
+                pkgs.fd
+              ];
+            }
+            ''
+              cd ${self}
+              purs-tidy check $(fd -epurs)
+              touch $out
+            '';
+        });
 
-            shellHook =
-              let
-                nodeModules = project.mkNodeModules { };
-              in
-              ''
-                __ln-node-modules () {
-                  local modules=./node_modules
-                  if test -L "$modules"; then
-                    rm "$modules";
-                  elif test -e "$modules"; then
-                    echo 'refusing to overwrite existing (non-symlinked) `node_modules`'
-                    exit 1
-                  fi
-
-                  ln -s ${nodeModules}/lib/node_modules "$modules"
-                }
-
-                __ln-node-modules
-
-                export PATH="${nodeModules}/bin:$PATH"
-              '';
-          });
+      devShell = perSystem (system: (psProjectFor system).devShell);
     };
 }

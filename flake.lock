@@ -548,17 +548,17 @@
         "servant-purescript": "servant-purescript"
       },
       "locked": {
-        "lastModified": 1650630976,
-        "narHash": "sha256-67uwdizWFyN6d2sPZKCL66HNOLubyyllmh+tPWLmOHE=",
+        "lastModified": 1650875247,
+        "narHash": "sha256-HpFcQcJiqqc6UsBWULqqfsSeJY4+/kOsg6Mr3acXBIg=",
         "owner": "Plutonomicon",
         "repo": "cardano-transaction-lib",
-        "rev": "f65eb08656f9da4ad1b83b09d25422bcf4835e9c",
+        "rev": "be7b7e2e23080fc54de73d6f69f4af6ff4d9ad50",
         "type": "github"
       },
       "original": {
         "owner": "Plutonomicon",
         "repo": "cardano-transaction-lib",
-        "rev": "f65eb08656f9da4ad1b83b09d25422bcf4835e9c",
+        "rev": "be7b7e2e23080fc54de73d6f69f4af6ff4d9ad50",
         "type": "github"
       }
     },
@@ -1505,22 +1505,6 @@
         "type": "indirect"
       }
     },
-    "nixpkgs_3": {
-      "locked": {
-        "lastModified": 1650585041,
-        "narHash": "sha256-wZAZbkHwXKKdFTrDdKiFIvAtYOgQd3qO1jSSsaWlU84=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "f53f90b66921488fb3681ac78528ce407b775590",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "nixpkgs-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "ogmios": {
       "inputs": {
         "Win32-network": "Win32-network_2",
@@ -1735,7 +1719,10 @@
       "inputs": {
         "cardano-transaction-lib": "cardano-transaction-lib",
         "flake-compat": "flake-compat_2",
-        "nixpkgs": "nixpkgs_3"
+        "nixpkgs": [
+          "cardano-transaction-lib",
+          "nixpkgs"
+        ]
       }
     },
     "servant-purescript": {
