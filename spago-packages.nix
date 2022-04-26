@@ -175,11 +175,11 @@ let
 
     "cardano-transaction-lib" = pkgs.stdenv.mkDerivation {
         name = "cardano-transaction-lib";
-        version = "be7b7e2e23080fc54de73d6f69f4af6ff4d9ad50";
+        version = "181d39737e0322da0101e313376a2db76a2de9d4";
         src = pkgs.fetchgit {
           url = "https://github.com/Plutonomicon/cardano-transaction-lib.git";
-          rev = "be7b7e2e23080fc54de73d6f69f4af6ff4d9ad50";
-          sha256 = "12042ykxsax3hfn47ziyiqjrxi3ymax50mn0a8xagak2q90mr48y";
+          rev = "181d39737e0322da0101e313376a2db76a2de9d4";
+          sha256 = "1pjiikflqadixw3w937vdkvzy2ijs2braf85pmy2rx5fflnjv33n";
         };
         phases = "installPhase";
         installPhase = "ln -s $src $out";
@@ -288,6 +288,18 @@ let
           url = "https://github.com/purescript/purescript-either.git";
           rev = "c1a1af35684f10eecaf6ac7d38dbf6bd48af2ced";
           sha256 = "18dk159yyv7vs0xsnh9m5fajd7zy6zw5b2mpyd6nqdh3c6bb9wh6";
+        };
+        phases = "installPhase";
+        installPhase = "ln -s $src $out";
+      };
+
+    "encoding" = pkgs.stdenv.mkDerivation {
+        name = "encoding";
+        version = "v0.0.7";
+        src = pkgs.fetchgit {
+          url = "https://github.com/menelaos/purescript-encoding.git";
+          rev = "0a4187136f9ea4ea51ddf635e3b3c2cd2461faac";
+          sha256 = "1rsnn8g2lx24k9wflr1jj12281i0smprb76nfm2f61yqqiwgij4d";
         };
         phases = "installPhase";
         installPhase = "ln -s $src $out";
@@ -636,6 +648,18 @@ let
           url = "https://github.com/Thimoteus/purescript-mmorph.git";
           rev = "ebe16afbfa16dd600f3379ccedc7529417402393";
           sha256 = "0ds88hray8v0519n9k546qsc4qs8bj1k5h5az7nwfp0gaq0r5wpk";
+        };
+        phases = "installPhase";
+        installPhase = "ln -s $src $out";
+      };
+
+    "monad-logger" = pkgs.stdenv.mkDerivation {
+        name = "monad-logger";
+        version = "v1.3.1";
+        src = pkgs.fetchgit {
+          url = "https://github.com/cprussin/purescript-monad-logger.git";
+          rev = "55441b4caf390bc38078a9c5c865efb105549cef";
+          sha256 = "0r1cp2x6mamjca5r5rm5mp1gidlll72paqrjd3z0j69l7iy7dgas";
         };
         phases = "installPhase";
         installPhase = "ln -s $src $out";

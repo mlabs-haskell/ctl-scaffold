@@ -10,7 +10,7 @@
       type = "github";
       owner = "Plutonomicon";
       repo = "cardano-transaction-lib";
-      rev = "be7b7e2e23080fc54de73d6f69f4af6ff4d9ad50";
+      rev = "181d39737e0322da0101e313376a2db76a2de9d4";
     };
     nixpkgs.follows = "cardano-transaction-lib/nixpkgs";
   };
@@ -36,11 +36,17 @@
     {
       defaultPackage = perSystem (system: self.packages.${system}.ctl-scaffold);
 
-      packages = perSystem (system: {
-        ctl-scaffold = (psProjectFor system).buildPursProject {
-          sources = [ "exe" ];
-        };
-      });
+      packages = perSystem (system:
+        let
+          project = psProjectFor system;
+        in
+        {
+          ctl-scaffold = project.buildPursProject { sources = [ "exe" ]; };
+          ctl-scaffold-bundle-web = project.bundlePursProject {
+            sources = [ "exe" ];
+            main = "Main";
+          };
+        });
 
       checks = perSystem (system:
         let
