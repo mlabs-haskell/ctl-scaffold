@@ -14,9 +14,6 @@ result-*
 .direnv
 /node_modules
 /node_modules/
-.node
-.node-cfg
-/server/dist-newstyle
-/server/dist-newstyle/
 .projectile
 /dist/
+output.js

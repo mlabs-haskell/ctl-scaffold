@@ -186,6 +186,7 @@ let additions =
             , "control"
             , "effect"
             , "either"
+            , "encoding"
             , "enums"
             , "exceptions"
             , "foldable-traversable"
@@ -194,13 +195,16 @@ let additions =
             , "gen"
             , "identity"
             , "integers"
+            , "js-date"
             , "lattice"
             , "lists"
             , "maybe"
             , "medea"
+            , "monad-logger"
             , "mote"
             , "newtype"
             , "node-buffer"
+            , "node-fs"
             , "node-fs-aff"
             , "node-path"
             , "nonempty"
@@ -227,11 +231,9 @@ let additions =
             , "unfoldable"
             , "unsafe-coerce"
             , "untagged-union"
-            , "enums"
             ]
         , repo = "https://github.com/Plutonomicon/cardano-transaction-lib.git"
-        , version = "682f325e248a54c431fb10dee9a373d2d6df328d"
+        , version = "181d39737e0322da0101e313376a2db76a2de9d4"
         }
       }
-
 in  upstream // additions
