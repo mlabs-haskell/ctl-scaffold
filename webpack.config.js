@@ -50,7 +50,7 @@ module.exports = {
   },
 
   resolve: {
-    modules: ["node_modules"],
+    modules: [process.env.NODE_PATH],
     extensions: [".js"],
     fallback: {
       buffer: require.resolve("buffer/"),
@@ -84,5 +84,7 @@ module.exports = {
     new webpack.ProvidePlugin({
       Buffer: ["buffer", "Buffer"],
     }),
+    new webpack.ContextReplacementPlugin(/cardano-serialization-lib-browser/),
+    new webpack.ContextReplacementPlugin(/cardano-serialization-lib-nodejs/),
   ],
 };
