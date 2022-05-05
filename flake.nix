@@ -10,14 +10,19 @@
       type = "github";
       owner = "Plutonomicon";
       repo = "cardano-transaction-lib";
-      rev = "181d39737e0322da0101e313376a2db76a2de9d4";
+      rev = "cb0af8f023a7f5f1cadeba8a8f2e02523f661371";
     };
     nixpkgs.follows = "cardano-transaction-lib/nixpkgs";
   };
 
   outputs = { self, nixpkgs, cardano-transaction-lib, ... }@inputs:
     let
-      defaultSystems = [ "x86_64-linux" "x86_64-darwin" ];
+      defaultSystems = [
+        "x86_64-linux"
+        "x86_64-darwin"
+        "aarch64-linux"
+        "aarch64-darwin"
+      ];
       perSystem = nixpkgs.lib.genAttrs defaultSystems;
       nixpkgsFor = system: import nixpkgs {
         inherit system;
@@ -34,27 +39,28 @@
         };
     in
     {
-      defaultPackage = perSystem (system: self.packages.${system}.ctl-scaffold);
+      defaultPackage = perSystem (system:
+        self.packages.${system}.ctl-scaffold-bundle-web
+      );
 
-      packages = perSystem (system:
-        let
-          project = psProjectFor system;
-        in
-        {
-          ctl-scaffold = project.buildPursProject { sources = [ "exe" ]; };
-          ctl-scaffold-bundle-web = project.bundlePursProject {
-            sources = [ "exe" ];
-            main = "Main";
-          };
-        });
+      packages = perSystem (system: {
+        ctl-scaffold-bundle-web = (psProjectFor system).bundlePursProject {
+          sources = [ "exe" ];
+          main = "Main";
+        };
+        ctl-scaffold-runtime = (nixpkgsFor system).buildCtlRuntime { };
+      });
+
+      apps = perSystem (system: {
+        ctl-scaffold-runtime = (nixpkgsFor system).launchCtlRuntime { };
+      });
 
       checks = perSystem (system:
         let
           pkgs = nixpkgsFor system;
-          project = psProjectFor system;
         in
         {
-          ctl-scaffold = project.runPursTest {
+          ctl-scaffold = (psProjectFor system).runPursTest {
             sources = [ "exe" "test" ];
           };
           formatting-check = pkgs.runCommand "formatting-check"
