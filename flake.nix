@@ -45,7 +45,7 @@
 
       packages = perSystem (system: {
         ctl-scaffold-bundle-web = (psProjectFor system).bundlePursProject {
-          sources = [ "exe" ];
+          sources = [ "src" ];
           main = "Main";
         };
         ctl-scaffold-runtime = (nixpkgsFor system).buildCtlRuntime { };
@@ -61,7 +61,7 @@
         in
         {
           ctl-scaffold = (psProjectFor system).runPursTest {
-            sources = [ "exe" "test" ];
+            sources = [ "src" "test" ];
           };
           formatting-check = pkgs.runCommand "formatting-check"
             {
