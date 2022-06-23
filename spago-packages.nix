@@ -5,6 +5,30 @@
 let
   inputs = {
 
+    "aeson" = pkgs.stdenv.mkDerivation {
+        name = "aeson";
+        version = "69bd18c4a9cffdebc45c55d2448740721a91854c";
+        src = pkgs.fetchgit {
+          url = "https://github.com/mlabs-haskell/purescript-aeson.git";
+          rev = "69bd18c4a9cffdebc45c55d2448740721a91854c";
+          sha256 = "1khn834wsqgf80p8xjyw6z06dhj8vknj7lhpm5dj44nqlaj8qhqb";
+        };
+        phases = "installPhase";
+        installPhase = "ln -s $src $out";
+      };
+
+    "aeson-helpers" = pkgs.stdenv.mkDerivation {
+        name = "aeson-helpers";
+        version = "44d0dae060cf78babd4534320192b58c16a6f45b";
+        src = pkgs.fetchgit {
+          url = "https://github.com/mlabs-haskell/purescript-bridge-aeson-helpers.git";
+          rev = "44d0dae060cf78babd4534320192b58c16a6f45b";
+          sha256 = "1fgvaqvd9145zz5xw3fsa5vm75kp6bxcwa2nzq1dx2367h3a0zl0";
+        };
+        phases = "installPhase";
+        installPhase = "ln -s $src $out";
+      };
+
     "aff" = pkgs.stdenv.mkDerivation {
         name = "aff";
         version = "v6.0.0";
@@ -175,11 +199,11 @@ let
 
     "cardano-transaction-lib" = pkgs.stdenv.mkDerivation {
         name = "cardano-transaction-lib";
-        version = "cb0af8f023a7f5f1cadeba8a8f2e02523f661371";
+        version = "9d6d73a4285439f2ed8ec46fe4b2a1974fb89b0c";
         src = pkgs.fetchgit {
           url = "https://github.com/Plutonomicon/cardano-transaction-lib.git";
-          rev = "cb0af8f023a7f5f1cadeba8a8f2e02523f661371";
-          sha256 = "1g70r1izisvp38235wpn7zf02vradl2h8pc8p6gyydk68icfzvzv";
+          rev = "9d6d73a4285439f2ed8ec46fe4b2a1974fb89b0c";
+          sha256 = "0s8ix0jmlaiiv0jj21cm63j9cb5yxxb2yyfxqjxxca74nbhh7szy";
         };
         phases = "installPhase";
         installPhase = "ln -s $src $out";
@@ -1073,6 +1097,18 @@ let
         installPhase = "ln -s $src $out";
       };
 
+    "sequences" = pkgs.stdenv.mkDerivation {
+        name = "sequences";
+        version = "v3.0.2";
+        src = pkgs.fetchgit {
+          url = "https://github.com/hdgarrood/purescript-sequences";
+          rev = "1f1d828ef30070569c812d0af23eb7253bb1e990";
+          sha256 = "0mc0jjs1119c2nyd08yhdmliq3s47lhrdknhziga3lnbzja889k4";
+        };
+        phases = "installPhase";
+        installPhase = "ln -s $src $out";
+      };
+
     "spec" = pkgs.stdenv.mkDerivation {
         name = "spec";
         version = "v5.0.1";
@@ -1080,6 +1116,18 @@ let
           url = "https://github.com/purescript-spec/purescript-spec.git";
           rev = "2cfa11573dbb695c117efce0a8f76a3daba12e87";
           sha256 = "0hpca1sa738029ww74zpw31br5x339q35kzb10iqd55lp6611k80";
+        };
+        phases = "installPhase";
+        installPhase = "ln -s $src $out";
+      };
+
+    "spec-quickcheck" = pkgs.stdenv.mkDerivation {
+        name = "spec-quickcheck";
+        version = "v4.0.0";
+        src = pkgs.fetchgit {
+          url = "https://github.com/purescript-spec/purescript-spec-quickcheck.git";
+          rev = "c2991f475b8fa11de8b68bcb5895b36be04d1e82";
+          sha256 = "01xcbfyqzax9c5najbfy12q0nvfklfm37llj2vkmi3wgkskg4prz";
         };
         phases = "installPhase";
         installPhase = "ln -s $src $out";
@@ -1116,6 +1164,18 @@ let
           url = "https://github.com/purescript/purescript-tailrec.git";
           rev = "5fbf0ac05dc6ab1a228b2897630195eb7483b962";
           sha256 = "1jjl2q2hyhjcdxpamzr1cdlxhmq2bl170x5p3jajb9zgwkqx0x22";
+        };
+        phases = "installPhase";
+        installPhase = "ln -s $src $out";
+      };
+
+    "text-encoding" = pkgs.stdenv.mkDerivation {
+        name = "text-encoding";
+        version = "v1.0.0";
+        src = pkgs.fetchgit {
+          url = "https://github.com/AlexaDeWit/purescript-text-encoding.git";
+          rev = "609ea0916f6817971d4a6c11b991b59715aaa096";
+          sha256 = "1r6ihj6m6ahp1cjf4i25pq9a00r2mvgrd8794xiapzsaigljz42c";
         };
         phases = "installPhase";
         installPhase = "ln -s $src $out";
